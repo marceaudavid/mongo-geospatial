@@ -2,6 +2,8 @@
 
 The coordinates will be in the format `[Longitude, Latitude]` as specified in the [GeoJSON specification](https://tools.ietf.org/html/rfc7946#section-3.1.1) and the [MongoDB documentation](https://docs.mongodb.com/manual/reference/geojson/)
 
+The geometries are available in the data.geojson file.
+
 **Insert 3 coordinates from Paris :**
 
 ```javascript
@@ -121,23 +123,28 @@ db.places.insertOne({
 }
 ```
 
+**Check if the polygon include the points :**
+
 ```js
 db.places.find({
-  geometry: {
-    $geoWithin: {
-      $geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [2.2936534881591797, 48.878772022014644],
-            [2.2807788848876953, 48.85302559914698],
-            [2.3205184936523438, 48.85167015731634],
-            [2.2936534881591797, 48.878772022014644],
+  $and: [
+    (geometry: {
+      $geoWithin: {
+        $geometry: {
+          type: 'Polygon',
+          coordinates: [
+            [
+              [2.2936534881591797, 48.878772022014644],
+              [2.2807788848876953, 48.85302559914698],
+              [2.3205184936523438, 48.85167015731634],
+              [2.2936534881591797, 48.878772022014644]
+            ]
           ],
-        ],
+        },
       },
-    },
-  },
+    }),
+    { geometry: { type: 'Point' } },
+  ],
 });
 ```
 
